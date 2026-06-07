@@ -1,0 +1,157 @@
+@import "tailwindcss";
+
+@theme {
+  /* ─── Brand Colors ─────────────────────────────────────────── */
+  --color-primary-50: oklch(97% 0.015 250);
+  --color-primary-100: oklch(93% 0.04 250);
+  --color-primary-200: oklch(87% 0.08 250);
+  --color-primary-300: oklch(78% 0.13 250);
+  --color-primary-400: oklch(67% 0.18 250);
+  --color-primary-500: oklch(55% 0.22 250);
+  --color-primary-600: oklch(47% 0.22 250);
+  --color-primary-700: oklch(40% 0.20 250);
+  --color-primary-800: oklch(33% 0.17 250);
+  --color-primary-900: oklch(27% 0.13 250);
+  --color-primary-950: oklch(18% 0.09 250);
+
+  /* ─── Surface Colors (Dark mode aware) ─────────────────────── */
+  --color-surface-0: oklch(100% 0 0);
+  --color-surface-50: oklch(98.5% 0.003 250);
+  --color-surface-100: oklch(96% 0.006 250);
+  --color-surface-200: oklch(91% 0.01 250);
+  --color-surface-800: oklch(20% 0.015 250);
+  --color-surface-850: oklch(16% 0.015 250);
+  --color-surface-900: oklch(13% 0.015 250);
+  --color-surface-950: oklch(9% 0.012 250);
+
+  /* ─── Semantic Colors ───────────────────────────────────────── */
+  --color-success-500: oklch(68% 0.18 150);
+  --color-warning-500: oklch(75% 0.18 65);
+  --color-danger-500: oklch(58% 0.22 25);
+
+  /* ─── Typography ────────────────────────────────────────────── */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* ─── Border Radius ─────────────────────────────────────────── */
+  --radius-card: 0.75rem;
+  --radius-modal: 1rem;
+}
+
+/* ─── Base styles ────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: oklch(98.5% 0.003 250);
+  color: oklch(20% 0.015 250);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.dark body {
+  background-color: oklch(9% 0.012 250);
+  color: oklch(93% 0.006 250);
+}
+
+/* ─── Scrollbar ──────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: oklch(75% 0.01 250);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: oklch(60% 0.01 250);
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: oklch(35% 0.01 250);
+}
+
+/* ─── Focus ring ─────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid oklch(55% 0.22 250);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ─── Selection ──────────────────────────────────────────────────── */
+::selection {
+  background: oklch(87% 0.08 250);
+  color: oklch(27% 0.13 250);
+}
+
+/* ─── Transitions ────────────────────────────────────────────────── */
+.transition-base {
+  transition: all 0.15s ease;
+}
+
+/* ─── Loading skeleton animation ────────────────────────────────── */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    oklch(93% 0.005 250) 25%,
+    oklch(97% 0.003 250) 50%,
+    oklch(93% 0.005 250) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+.dark .skeleton {
+  background: linear-gradient(
+    90deg,
+    oklch(20% 0.01 250) 25%,
+    oklch(25% 0.01 250) 50%,
+    oklch(20% 0.01 250) 75%
+  );
+  background-size: 200% 100%;
+}
+
+/* ─── Page transitions ───────────────────────────────────────────── */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.3s ease forwards;
+}
+
+/* ─── Sidebar active item indicator ─────────────────────────────── */
+.sidebar-item-active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 60%;
+  background: oklch(55% 0.22 250);
+  border-radius: 0 4px 4px 0;
+}
