@@ -1,70 +1,148 @@
+
 const mongoose = require('mongoose');
 const ApiError = require('../utils/ApiError');
 const logger = require('../utils/logger');
 
 const errorHandler = (err, req, res, next) => {
-  let error = err;
+  // Ensure all errors are ApiError instances
+  let error =
+    err instanceof ApiError
+      ? err
+      : new ApiError(500, 'Internal Server Error');
 
-  // Log the error
+  /**
+   * Sanitize sensitive request data before logging
+   */
+  const sanitizedBody = { ...req.body };
+
+  if (sanitizedBody.password) {
+    sanitizedBody.password = '***';
+  }
+
+  if (sanitizedBody.confirmPassword) {
+    sanitizedBody.confirmPassword = '***';
+  }
+
+  /**
+   * Structured Error Logging
+   */
   logger.error({
     message: err.message,
     stack: err.stack,
-    path: req.path,
+    path: req.originalUrl,
     method: req.method,
     ip: req.ip,
-    user: req.user?._id,
+    user: req.user?._id || null,
+    body: sanitizedBody,
+    params: req.params,
+    query: req.query,
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV,
   });
 
-  // Mongoose CastError (invalid ObjectId)
+  /**
+   * Mongoose CastError
+   * Example: Invalid ObjectId
+   */
   if (err instanceof mongoose.Error.CastError) {
-    error = new ApiError(400, `Invalid ${err.path}: ${err.value}`);
+    error = new ApiError(
+      400,
+      `Invalid ${err.path}`
+    );
   }
 
-  // Mongoose duplicate key
+  /**
+   * Duplicate Key Error
+   */
   if (err.code === 11000) {
     const field = Object.keys(err.keyValue || {})[0];
-    error = new ApiError(409, `${field ? `'${err.keyValue[field]}'` : 'A record'} already exists`);
+
+    error = new ApiError(
+      409,
+      `${field} already exists`
+    );
   }
 
-  // Mongoose validation error
+  /**
+   * Mongoose Validation Error
+   */
   if (err instanceof mongoose.Error.ValidationError) {
     const errors = Object.values(err.errors).map((e) => ({
       field: e.path,
       message: e.message,
+      code: 'VALIDATION_ERROR',
     }));
-    error = new ApiError(422, 'Validation failed', errors);
+
+    error = new ApiError(
+      422,
+      'Validation failed',
+      errors
+    );
   }
 
-  // JWT errors handled in auth middleware — this is a catch-all
+  /**
+   * JWT Errors
+   */
   if (err.name === 'JsonWebTokenError') {
-    error = new ApiError(401, 'Invalid token');
+    error = new ApiError(
+      401,
+      'Invalid token'
+    );
   }
 
   if (err.name === 'TokenExpiredError') {
-    error = new ApiError(401, 'Token expired');
+    error = new ApiError(
+      401,
+      'Token expired'
+    );
   }
 
-  // Multer errors
+  /**
+   * Multer Errors
+   */
   if (err.code === 'LIMIT_FILE_SIZE') {
-    error = new ApiError(413, 'File size exceeds the allowed limit');
+    error = new ApiError(
+      413,
+      'File size exceeds allowed limit'
+    );
   }
 
+  /**
+   * Final Response
+   */
   const statusCode = error.statusCode || 500;
-  const message = error.message || 'Internal Server Error';
 
-  res.status(statusCode).json({
+  const response = {
     success: false,
-    message,
+    message: error.message || 'Internal Server Error',
     errors: error.errors || [],
-    ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
-  });
+  };
+
+  /**
+   * Show stack only in development
+   */
+  if (process.env.NODE_ENV === 'development') {
+    response.stack = err.stack;
+  }
+
+  return res
+    .status(statusCode)
+    .json(response);
 };
 
 /**
- * Handle 404 routes
+ * 404 Handler
  */
 const notFound = (req, res, next) => {
-  next(new ApiError(404, `Route not found: ${req.originalUrl}`));
+  next(
+    new ApiError(
+      404,
+      `Route not found: ${req.originalUrl}`
+    )
+  );
 };
 
-module.exports = { errorHandler, notFound };
+module.exports = {
+  errorHandler,
+  notFound,
+};
