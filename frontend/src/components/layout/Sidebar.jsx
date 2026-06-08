@@ -16,7 +16,7 @@ import {
   Calendar,
   FolderOpen,
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn, ROLE_META } from '@/lib/utils'
 import useAuthStore from '@/store/authStore'
 
 const NAV_ITEMS = [
@@ -27,33 +27,44 @@ const NAV_ITEMS = [
     ],
   },
   {
+    section: 'People',
+    items: [
+      { label: 'Students',   icon: Users,  to: '/dashboard/students', roles: ['admin', 'teacher'] },
+      { label: 'Faculty',    icon: Shield, to: '/dashboard/teachers', roles: ['admin'] },
+    ],
+  },
+  {
     section: 'Academics',
     items: [
-      { label: 'Students', icon: Users, to: '/dashboard/students', roles: ['admin', 'teacher'] },
-      { label: 'Teachers', icon: Shield, to: '/dashboard/teachers', roles: ['admin'] },
-      { label: 'Classes', icon: BookOpen, to: '/dashboard/classes', roles: ['admin', 'teacher', 'student'] },
-      { label: 'Subjects', icon: FolderOpen, to: '/dashboard/subjects', roles: ['admin', 'teacher', 'student'] },
+      { label: 'Classes',        icon: BookOpen,     to: '/dashboard/classes',  roles: ['admin', 'teacher', 'student'] },
+      { label: 'Subjects',       icon: FolderOpen,   to: '/dashboard/subjects', roles: ['admin', 'teacher', 'student'] },
+      { label: 'Assignments',    icon: ClipboardList, to: '/dashboard/assignments', roles: ['admin', 'teacher', 'student'] },
+      { label: 'Study Materials', icon: FileText,    to: '/dashboard/materials', roles: ['admin', 'teacher', 'student'] },
     ],
   },
   {
-    section: 'Activities',
+    section: 'Monitoring',
     items: [
-      { label: 'Attendance', icon: Calendar, to: '/dashboard/attendance', roles: ['admin', 'teacher', 'student', 'parent'] },
-      { label: 'Assignments', icon: ClipboardList, to: '/dashboard/assignments', roles: ['admin', 'teacher', 'student'] },
-      { label: 'Study Materials', icon: FileText, to: '/dashboard/materials', roles: ['admin', 'teacher', 'student'] },
+      { label: 'Attendance', icon: Calendar,  to: '/dashboard/attendance', roles: ['admin', 'teacher', 'student', 'parent'] },
+      { label: 'Results',    icon: BarChart3, to: '/dashboard/results',    roles: ['admin', 'teacher', 'student', 'parent'] },
     ],
   },
   {
-    section: 'Reports',
+    section: 'Communication',
     items: [
-      { label: 'Results', icon: BarChart3, to: '/dashboard/results', roles: ['admin', 'teacher', 'student', 'parent'] },
-      { label: 'Notices', icon: Bell, to: '/dashboard/notices', roles: ['admin', 'teacher', 'student', 'parent'] },
+      { label: 'Notices & Announcements', icon: Bell, to: '/dashboard/notices', roles: ['admin', 'teacher', 'student', 'parent'] },
     ],
   },
   {
-    section: 'System',
+    section: 'Administration',
     items: [
-      { label: 'Settings', icon: Settings, to: '/dashboard/settings', roles: ['admin', 'teacher', 'student', 'parent'] },
+      { label: 'Settings', icon: Settings, to: '/dashboard/settings', roles: ['admin'] },
+    ],
+  },
+  {
+    section: 'Account',
+    items: [
+      { label: 'Settings', icon: Settings, to: '/dashboard/settings', roles: ['teacher', 'student', 'parent'] },
     ],
   },
 ]
@@ -84,15 +95,25 @@ export default function Sidebar({ collapsed, onToggle }) {
           </div>
           <AnimatePresence>
             {!collapsed && (
-              <motion.span
+              <motion.div
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -10 }}
                 transition={{ duration: 0.2 }}
-                className="text-base font-bold text-gray-900 dark:text-gray-100 tracking-tight whitespace-nowrap"
+                className="min-w-0"
               >
-                EduFlow
-              </motion.span>
+                <span className="text-base font-bold text-gray-900 dark:text-gray-100 tracking-tight block whitespace-nowrap">
+                  EduFlow
+                </span>
+                {user?.role && (
+                  <span className={cn(
+                    'text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded-md',
+                    ROLE_META[user.role]?.color
+                  )}>
+                    {ROLE_META[user.role]?.label ?? user.role}
+                  </span>
+                )}
+              </motion.div>
             )}
           </AnimatePresence>
         </div>

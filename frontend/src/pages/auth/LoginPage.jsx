@@ -109,16 +109,17 @@ export default function LoginPage() {
           </p>
           <div className="space-y-1.5">
             {[
-              { role: 'Admin', email: 'admin@eduflow.com' },
-              { role: 'Teacher', email: 'teacher@eduflow.com' },
-              { role: 'Student', email: 'student@eduflow.com' },
+              { role: 'Principal (Admin)', email: 'admin@eduflow.com' },
+              { role: 'Teacher',           email: 'teacher@eduflow.com' },
+              { role: 'Student',           email: 'student@eduflow.com' },
+              { role: 'Parent',            email: 'parent@eduflow.com' },
             ].map(({ role, email }) => (
               <div key={role} className="flex items-center justify-between text-xs">
                 <span className="text-gray-500 dark:text-gray-400">{role}</span>
                 <span className="font-mono text-gray-700 dark:text-gray-300">{email}</span>
               </div>
             ))}
-            <p className="text-xs text-gray-400 mt-1.5">Password: Demo@1234</p>
+            <p className="text-xs text-gray-400 mt-1.5">All passwords: <span className="font-mono">Demo@1234</span></p>
           </div>
         </div>
       </form>

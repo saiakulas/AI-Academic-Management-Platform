@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const { ROLES: ROLE_VALUES } = require('../config/roles');
 
-const ROLES = ['admin', 'teacher', 'student', 'parent'];
+const ROLES = Object.values(ROLE_VALUES);
 const SALT_ROUNDS = 12;
 
 const userSchema = new mongoose.Schema(

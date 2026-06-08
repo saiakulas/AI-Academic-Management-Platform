@@ -11,8 +11,6 @@ import {
   User,
   ChevronDown,
   Menu,
-  Shield,
-  Check,
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
@@ -20,7 +18,7 @@ import useAuthStore from '@/store/authStore'
 import useThemeStore from '@/store/themeStore'
 import Avatar from '@/components/ui/Avatar'
 import Badge from '@/components/ui/Badge'
-import { cn, capitalize, ROLE_COLORS } from '@/lib/utils'
+import { cn, ROLE_META, getRoleBadgeVariant } from '@/lib/utils'
 
 const NOTIFICATIONS = [
   { id: 1, title: 'Assignment submitted', desc: 'Sarah J. submitted Math Assignment 3', time: '2m ago', read: false },
@@ -130,8 +128,8 @@ export default function Topbar({ onMenuClick }) {
               <p className="text-sm font-medium text-gray-900 dark:text-gray-100 leading-none truncate max-w-[100px]">
                 {user?.firstName}
               </p>
-              <p className="text-xs text-gray-400 dark:text-gray-500 capitalize leading-none mt-0.5">
-                {user?.role}
+              <p className="text-xs text-gray-400 dark:text-gray-500 leading-none mt-0.5">
+                {user?.role === 'admin' ? 'Principal' : ROLE_META[user?.role]?.label ?? user?.role}
               </p>
             </div>
             <ChevronDown className={cn('h-3.5 w-3.5 text-gray-400 transition-transform hidden sm:block', profileOpen && 'rotate-180')} />
@@ -214,8 +212,8 @@ function ProfileDropdown({ user, onNavigate, onLogout }) {
           <div className="min-w-0">
             <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">{fullName}</p>
             <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{user?.email}</p>
-            <Badge variant="primary" size="sm" className="mt-1.5">
-              {capitalize(user?.role)}
+            <Badge variant={getRoleBadgeVariant(user?.role)} size="sm" className="mt-1.5">
+              {user?.role === 'admin' ? 'Principal' : ROLE_META[user?.role]?.label ?? user?.role}
             </Badge>
           </div>
         </div>
