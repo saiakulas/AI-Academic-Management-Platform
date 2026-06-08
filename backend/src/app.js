@@ -5,8 +5,7 @@ const helmet = require('helmet');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
-const mongoSanitize = require('express-mongo-sanitize');
-const xss = require('xss-clean');
+const xss = require('xss');
 
 const config = require('./config');
 const { errorHandler, notFound } = require('./middleware/errorHandler');
@@ -22,9 +21,9 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        styleSrc: ["'self'", "'unsafe-inline'"],
-        imgSrc: ["'self'", 'data:', 'blob:'],
-        scriptSrc: ["'self'"],
+        styleSrc:   ["'self'", "'unsafe-inline'"],
+        imgSrc:     ["'self'", 'data:', 'blob:'],
+        scriptSrc:  ["'self'"],
       },
     },
     crossOriginEmbedderPolicy: false,
@@ -46,9 +45,42 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser(config.cookie.secret));
 
-// ─── Security Sanitization ────────────────────────────────────────────────────
-app.use(mongoSanitize()); // Prevent NoSQL injection
-app.use(xss());           // Prevent XSS attacks
+// ─── NoSQL Injection Prevention ───────────────────────────────────────────────
+// Strips keys containing '$' or '.' from req.body and req.params only
+// (avoids touching read-only req.query getter on newer Express/Router versions)
+const sanitizeObject = (obj) => {
+  if (!obj || typeof obj !== 'object') return;
+  for (const key of Object.keys(obj)) {
+    if (key.startsWith('$') || key.includes('.')) {
+      delete obj[key];
+    } else if (typeof obj[key] === 'object') {
+      sanitizeObject(obj[key]);
+    }
+  }
+};
+
+app.use((req, _res, next) => {
+  sanitizeObject(req.body);
+  sanitizeObject(req.params);
+  next();
+});
+
+// ─── XSS Prevention (sanitize string values in body) ─────────────────────────
+const sanitizeStrings = (obj) => {
+  if (!obj || typeof obj !== 'object') return;
+  for (const key of Object.keys(obj)) {
+    if (typeof obj[key] === 'string') {
+      obj[key] = xss(obj[key]);
+    } else if (typeof obj[key] === 'object') {
+      sanitizeStrings(obj[key]);
+    }
+  }
+};
+
+app.use((req, _res, next) => {
+  sanitizeStrings(req.body);
+  next();
+});
 
 // ─── HTTP Logging ─────────────────────────────────────────────────────────────
 if (config.env !== 'test') {

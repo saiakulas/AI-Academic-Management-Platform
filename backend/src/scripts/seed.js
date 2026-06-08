@@ -4,9 +4,6 @@
  */
 require('dotenv').config();
 const mongoose = require('mongoose');
-
-// Direct model import — no app/middleware involved
-const connectDB = require('../config/database');
 const User = require('../models/User');
 
 const DEMO_USERS = [

@@ -100,12 +100,11 @@ userSchema.virtual('isLocked').get(function () {
   return !!(this.lockUntil && this.lockUntil > Date.now());
 });
 
-// Pre-save: hash password
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
+// Pre-save: hash password (Mongoose 8+ async hooks don't use next())
+userSchema.pre('save', async function () {
+  if (!this.isModified('password')) return;
   this.password = await bcrypt.hash(this.password, SALT_ROUNDS);
-  this.passwordChangedAt = Date.now() - 1000; // Ensure tokens before this are invalid
-  next();
+  this.passwordChangedAt = Date.now() - 1000;
 });
 
 // Method: compare password
