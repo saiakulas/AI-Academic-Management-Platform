@@ -56,7 +56,7 @@ const studentSchema = new mongoose.Schema(
   }
 );
 
-studentSchema.index({ rollNumber: 1 });
+// rollNumber already indexed by unique:true in the field definition
 studentSchema.index({ currentClass: 1 });
 studentSchema.index({ isActive: 1 });
 

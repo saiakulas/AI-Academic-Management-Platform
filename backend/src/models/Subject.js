@@ -27,8 +27,9 @@ const subjectSchema = new mongoose.Schema(
   }
 );
 
-subjectSchema.index({ code: 1 });
+// code already indexed by unique:true in the field definition
 subjectSchema.index({ isActive: 1 });
+subjectSchema.index({ name: 1 });
 
 const Subject = mongoose.model('Subject', subjectSchema);
 module.exports = Subject;

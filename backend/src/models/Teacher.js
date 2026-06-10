@@ -40,8 +40,9 @@ const teacherSchema = new mongoose.Schema(
   }
 );
 
-teacherSchema.index({ employeeId: 1 });
+// employeeId already indexed by unique:true in the field definition
 teacherSchema.index({ isActive: 1 });
+teacherSchema.index({ department: 1 });
 
 const Teacher = mongoose.model('Teacher', teacherSchema);
 module.exports = Teacher;
