@@ -6,59 +6,58 @@ import DashboardLayout from '@/components/layout/DashboardLayout'
 import { FullPageSpinner } from '@/components/ui/Spinner'
 import { useAuthInit } from '@/hooks/useAuth'
 
-// Lazy-loaded pages
-const LoginPage       = lazy(() => import('@/pages/auth/LoginPage'))
-const RegisterPage    = lazy(() => import('@/pages/auth/RegisterPage'))
-const DashboardPage   = lazy(() => import('@/pages/dashboard/DashboardPage'))
-const PlaceholderPage = lazy(() => import('@/pages/dashboard/PlaceholderPage'))
-const NotFoundPage    = lazy(() => import('@/pages/errors/NotFoundPage'))
+// ── Auth pages ────────────────────────────────────────────────────
+const LoginPage    = lazy(() => import('@/pages/auth/LoginPage'))
+const RegisterPage = lazy(() => import('@/pages/auth/RegisterPage'))
+
+// ── Dashboard pages ───────────────────────────────────────────────
+const DashboardPage    = lazy(() => import('@/pages/dashboard/DashboardPage'))
+const StudentsPage     = lazy(() => import('@/pages/dashboard/students/StudentsPage'))
+const TeachersPage     = lazy(() => import('@/pages/dashboard/teachers/TeachersPage'))
+const ClassesPage      = lazy(() => import('@/pages/dashboard/classes/ClassesPage'))
+const SubjectsPage     = lazy(() => import('@/pages/dashboard/subjects/SubjectsPage'))
+const AttendancePage   = lazy(() => import('@/pages/dashboard/attendance/AttendancePage'))
+const AssignmentsPage  = lazy(() => import('@/pages/dashboard/assignments/AssignmentsPage'))
+const NoticesPage      = lazy(() => import('@/pages/dashboard/notices/NoticesPage'))
+const PlaceholderPage  = lazy(() => import('@/pages/dashboard/PlaceholderPage'))
+const NotFoundPage     = lazy(() => import('@/pages/errors/NotFoundPage'))
 
 export default function App() {
-  // Fires exactly once: verifies session via /auth/me, sets isInitialized
   useAuthInit()
 
   return (
     <Suspense fallback={<FullPageSpinner />}>
       <Routes>
-        {/* Root → dashboard */}
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
-        {/* ── Guest-only auth routes ───────────────────────── */}
+        {/* ── Guest routes ─────────────────────────────── */}
         <Route path="/auth/login"    element={<GuestRoute><LoginPage /></GuestRoute>} />
         <Route path="/auth/register" element={<GuestRoute><RegisterPage /></GuestRoute>} />
 
-        {/* ── Protected dashboard routes ───────────────────── */}
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <DashboardLayout />
-            </ProtectedRoute>
-          }
-        >
+        {/* ── Protected dashboard routes ────────────────── */}
+        <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
           <Route index element={<DashboardPage />} />
 
           {/* Academics */}
-          <Route path="students"   element={<PlaceholderPage title="Students"       description="Manage student profiles, enrollment and academic records." />} />
-          <Route path="teachers"   element={<PlaceholderPage title="Teachers"       description="Manage teacher profiles, assignments and performance." />} />
-          <Route path="classes"    element={<PlaceholderPage title="Classes"        description="Manage class schedules, sections and assignments." />} />
-          <Route path="subjects"   element={<PlaceholderPage title="Subjects"       description="Manage subjects, syllabi and curriculum." />} />
+          <Route path="students"   element={<ProtectedRoute roles={['admin','teacher']}><StudentsPage /></ProtectedRoute>} />
+          <Route path="teachers"   element={<ProtectedRoute roles={['admin']}><TeachersPage /></ProtectedRoute>} />
+          <Route path="classes"    element={<ProtectedRoute roles={['admin','teacher','student']}><ClassesPage /></ProtectedRoute>} />
+          <Route path="subjects"   element={<ProtectedRoute roles={['admin','teacher','student']}><SubjectsPage /></ProtectedRoute>} />
 
           {/* Activities */}
-          <Route path="attendance"  element={<PlaceholderPage title="Attendance"      description="Track and manage student and staff attendance." />} />
-          <Route path="assignments" element={<PlaceholderPage title="Assignments"     description="Create, assign and grade student assignments." />} />
-          <Route path="materials"   element={<PlaceholderPage title="Study Materials" description="Upload and manage notes, PDFs and resources." />} />
+          <Route path="attendance"  element={<AttendancePage />} />
+          <Route path="assignments" element={<AssignmentsPage />} />
+          <Route path="materials"   element={<PlaceholderPage title="Study Materials" description="Upload and manage notes, PDFs and learning resources. Coming in Phase 3." />} />
 
           {/* Reports */}
-          <Route path="results"  element={<PlaceholderPage title="Results & Performance"   description="Publish exam results and academic performance reports." />} />
-          <Route path="notices"  element={<PlaceholderPage title="Notices & Announcements" description="Broadcast notices and announcements to the institution." />} />
+          <Route path="results"  element={<PlaceholderPage title="Results & Performance" description="Publish and view academic results and analytics. Coming in Phase 3." />} />
+          <Route path="notices"  element={<NoticesPage />} />
 
           {/* System */}
-          <Route path="settings" element={<PlaceholderPage title="Settings"   description="Configure platform settings, roles and preferences." />} />
-          <Route path="profile"  element={<PlaceholderPage title="My Profile" description="View and update your personal account information." />} />
+          <Route path="settings" element={<PlaceholderPage title="Settings" description="Configure platform settings, roles and preferences. Coming in Phase 3." />} />
+          <Route path="profile"  element={<PlaceholderPage title="My Profile" description="View and edit your profile information. Coming in Phase 3." />} />
         </Route>
 
-        {/* 404 */}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Suspense>

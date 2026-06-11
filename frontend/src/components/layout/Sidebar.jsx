@@ -91,7 +91,7 @@ export default function Sidebar({ collapsed, onToggle }) {
       )}>
         <div className="flex items-center gap-2.5 min-w-0">
           <div className="h-8 w-8 bg-primary-600 rounded-xl flex items-center justify-center shrink-0">
-            <GraduationCap className="h-4.5 w-4.5 text-white" />
+            <GraduationCap className="h-4 w-4 text-white" />
           </div>
           <AnimatePresence>
             {!collapsed && (
@@ -191,7 +191,7 @@ function SidebarItem({ item, collapsed, active }) {
         }
         end={item.to === '/dashboard'}
       >
-        <Icon className={cn('h-4.5 w-4.5 shrink-0', active && 'text-primary-600 dark:text-primary-400')} />
+        <Icon className={cn('h-4 w-4 shrink-0', active && 'text-primary-600 dark:text-primary-400')} />
 
         <AnimatePresence>
           {!collapsed && (
