@@ -78,7 +78,7 @@ export default function RecentActivity() {
               className="flex gap-4 px-6 py-4 hover:bg-gray-50 dark:hover:bg-surface-800/50 transition-colors cursor-pointer"
             >
               <div className={cn('h-9 w-9 rounded-xl flex items-center justify-center shrink-0 mt-0.5', activity.color)}>
-                <Icon className="h-4.5 w-4.5" />
+                <Icon className="h-4 w-4" />
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{activity.title}</p>
