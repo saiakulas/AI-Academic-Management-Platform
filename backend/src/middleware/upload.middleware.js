@@ -4,10 +4,10 @@ const crypto  = require('crypto');
 const ApiError = require('../utils/ApiError');
 
 const ALLOWED_MIME_TYPES = {
-  'application/pdf':                                'pdf',
-  'application/msword':                             'doc',
+  'application/pdf':  'pdf',
+  'application/msword': 'doc',
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'docx',
-  'application/vnd.ms-powerpoint':                  'ppt',
+  'application/vnd.ms-powerpoint': 'ppt',
   'application/vnd.openxmlformats-officedocument.presentationml.presentation': 'pptx',
   'image/jpeg':  'image',
   'image/png':   'image',
@@ -19,12 +19,16 @@ const ALLOWED_MIME_TYPES = {
 
 const MAX_FILE_SIZE = parseInt(process.env.MAX_FILE_SIZE, 10) || 10 * 1024 * 1024; // 10MB
 
+// Resolve uploads path relative to project root (not CWD)
+const UPLOAD_DIR = process.env.UPLOAD_PATH
+  ? path.resolve(process.env.UPLOAD_PATH)
+  : path.join(__dirname, '..', '..', 'uploads');
+
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadPath = process.env.UPLOAD_PATH || './uploads';
-    cb(null, uploadPath);
+  destination: (_req, _file, cb) => {
+    cb(null, UPLOAD_DIR);
   },
-  filename: (req, file, cb) => {
+  filename: (_req, file, cb) => {
     const ext    = path.extname(file.originalname).toLowerCase();
     const unique = crypto.randomBytes(16).toString('hex');
     cb(null, `${Date.now()}-${unique}${ext}`);

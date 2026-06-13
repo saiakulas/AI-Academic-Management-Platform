@@ -102,7 +102,8 @@ if (config.env === 'production') {
 app.use('/api', apiLimiter);
 
 // ─── Static Files (uploads) ───────────────────────────────────────────────────
-app.use('/uploads', express.static('uploads'));
+const uploadsPath = require('path').join(__dirname, '..', 'uploads');
+app.use('/uploads', express.static(uploadsPath));
 
 // ─── API Routes ───────────────────────────────────────────────────────────────
 app.use('/api/v1', v1Routes);
