@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+/* ─── Tell Tailwind v4 to use .dark class for dark mode ──────────
+   Without this, Tailwind v4 defaults to prefers-color-scheme media
+   query, so dark: utilities won't respond to our JS class toggle.  */
+@variant dark (&:where(.dark, .dark *));
+
 @theme {
   /* ─── Brand Colors ─────────────────────────────────────────── */
   --color-primary-50: oklch(97% 0.015 250);
@@ -54,12 +59,23 @@ body {
   padding: 0;
   background-color: oklch(98.5% 0.003 250);
   color: oklch(20% 0.015 250);
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
-.dark body {
+/* html.dark — explicit selector so it always wins over the body default */
+html.dark body {
   background-color: oklch(9% 0.012 250);
   color: oklch(93% 0.006 250);
+}
+
+/* Also set background on <html> itself to prevent flash on edges/overscroll */
+html {
+  background-color: oklch(98.5% 0.003 250);
+  transition: background-color 0.15s ease;
+}
+
+html.dark {
+  background-color: oklch(9% 0.012 250);
 }
 
 /* ─── Scrollbar ──────────────────────────────────────────────────── */

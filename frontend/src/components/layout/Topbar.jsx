@@ -6,6 +6,7 @@ import {
   Search,
   Sun,
   Moon,
+  Monitor,
   LogOut,
   Settings,
   User,
@@ -87,9 +88,18 @@ export default function Topbar({ onMenuClick }) {
         <button
           onClick={toggleTheme}
           className="h-9 w-9 flex items-center justify-center rounded-xl text-gray-500 hover:bg-gray-100 dark:hover:bg-surface-800 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
-          title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+          title={
+            theme === 'dark'   ? 'Switch to light mode' :
+            theme === 'system' ? 'Switch to dark mode'  :
+            'Switch to dark mode'
+          }
         >
-          {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          {/* Show filled moon when dark, sun when light, monitor icon when system */}
+          {theme === 'dark'
+            ? <Sun  className="h-4 w-4" />
+            : theme === 'system'
+              ? <Monitor className="h-4 w-4" />
+              : <Moon className="h-4 w-4" />}
         </button>
 
         {/* Notifications */}
