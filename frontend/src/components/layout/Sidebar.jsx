@@ -29,17 +29,17 @@ const NAV_ITEMS = [
   {
     section: 'People',
     items: [
-      { label: 'Students',   icon: Users,  to: '/dashboard/students', roles: ['admin', 'teacher'] },
-      { label: 'Faculty',    icon: Shield, to: '/dashboard/teachers', roles: ['admin'] },
+      { label: 'Students', icon: Users,  to: '/dashboard/students', roles: ['admin', 'teacher'] },
+      { label: 'Faculty',  icon: Shield, to: '/dashboard/teachers', roles: ['admin'] },
     ],
   },
   {
     section: 'Academics',
     items: [
-      { label: 'Classes',        icon: BookOpen,     to: '/dashboard/classes',  roles: ['admin', 'teacher', 'student'] },
-      { label: 'Subjects',       icon: FolderOpen,   to: '/dashboard/subjects', roles: ['admin', 'teacher', 'student'] },
-      { label: 'Assignments',    icon: ClipboardList, to: '/dashboard/assignments', roles: ['admin', 'teacher', 'student'] },
-      { label: 'Study Materials', icon: FileText,    to: '/dashboard/materials', roles: ['admin', 'teacher', 'student'] },
+      { label: 'Classes',         icon: BookOpen,      to: '/dashboard/classes',     roles: ['admin', 'teacher', 'student'] },
+      { label: 'Subjects',        icon: FolderOpen,    to: '/dashboard/subjects',    roles: ['admin', 'teacher', 'student'] },
+      { label: 'Assignments',     icon: ClipboardList, to: '/dashboard/assignments', roles: ['admin', 'teacher', 'student'] },
+      { label: 'Study Materials', icon: FileText,      to: '/dashboard/materials',   roles: ['admin', 'teacher', 'student'] },
     ],
   },
   {
@@ -52,19 +52,14 @@ const NAV_ITEMS = [
   {
     section: 'Communication',
     items: [
-      { label: 'Notices & Announcements', icon: Bell, to: '/dashboard/notices', roles: ['admin', 'teacher', 'student', 'parent'] },
-    ],
-  },
-  {
-    section: 'Administration',
-    items: [
-      { label: 'Settings', icon: Settings, to: '/dashboard/settings', roles: ['admin'] },
+      { label: 'Notices', icon: Bell, to: '/dashboard/notices', roles: ['admin', 'teacher', 'student', 'parent'] },
     ],
   },
   {
     section: 'Account',
     items: [
-      { label: 'Settings', icon: Settings, to: '/dashboard/settings', roles: ['teacher', 'student', 'parent'] },
+      { label: 'Profile',  icon: Users,     to: '/dashboard/profile',  roles: ['admin', 'teacher', 'student', 'parent'] },
+      { label: 'Settings', icon: Settings,  to: '/dashboard/settings', roles: ['admin', 'teacher', 'student', 'parent'] },
     ],
   },
 ]
