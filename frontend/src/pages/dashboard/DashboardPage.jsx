@@ -199,23 +199,17 @@ export default function DashboardPage() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: i * 0.05 }}
               >
-                <Link
+              <Link
                   to={action.to}
                   className="flex items-center gap-3 p-3.5 bg-white dark:bg-surface-900 rounded-2xl border border-gray-100 dark:border-surface-800 hover:shadow-md hover:border-gray-200 dark:hover:border-surface-700 transition-all group"
                 >
-                  <div className={`h-9 w-9 ${action.color} bg-opacity-10 rounded-xl flex items-center justify-center shrink-0`}
-                    style={{ backgroundColor: undefined }}>
-                    <div className={`h-9 w-9 rounded-xl flex items-center justify-center shrink-0 ${action.color.replace('bg-', 'bg-opacity-10 bg-').replace('bg-opacity-10 ', '')} opacity-10 absolute`} />
-                    <span className={`h-9 w-9 rounded-xl flex items-center justify-center shrink-0 bg-current`}
-                      style={{ background: 'transparent' }}>
-                    </span>
+                  <div className={`h-9 w-9 rounded-xl flex items-center justify-center shrink-0 ${action.color} bg-opacity-15`}>
+                    <Icon className="h-4 w-4 text-white" />
                   </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium text-gray-800 dark:text-gray-200 leading-tight group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
-                      {action.label}
-                    </p>
-                  </div>
-                  <ArrowRight className="h-3.5 w-3.5 text-gray-400 group-hover:text-primary-500 group-hover:translate-x-0.5 transition-all shrink-0" />
+                  <p className="text-sm font-medium text-gray-800 dark:text-gray-200 leading-tight group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors flex-1 min-w-0 truncate">
+                    {action.label}
+                  </p>
+                  <ArrowRight className="h-3.5 w-3.5 text-gray-300 dark:text-gray-600 group-hover:text-primary-500 group-hover:translate-x-0.5 transition-all shrink-0" />
                 </Link>
               </motion.div>
             )
