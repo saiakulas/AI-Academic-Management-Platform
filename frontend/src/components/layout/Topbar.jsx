@@ -27,17 +27,16 @@ const NOTIFICATIONS = [
   { id: 3, title: 'Grade published', desc: 'Physics mid-term grades are out', time: '3h ago', read: true },
 ]
 
-export default function Topbar({ onMenuClick }) {
+export default function Topbar({ onMenuClick, onSearchClick }) {
   const { user, logout } = useAuthStore()
   const { theme, toggleTheme } = useThemeStore()
   const navigate = useNavigate()
 
   const [profileOpen, setProfileOpen] = useState(false)
-  const [notifOpen, setNotifOpen] = useState(false)
-  const [searchOpen, setSearchOpen] = useState(false)
+  const [notifOpen,   setNotifOpen]   = useState(false)
 
   const profileRef = useRef(null)
-  const notifRef = useRef(null)
+  const notifRef   = useRef(null)
 
   const unreadCount = NOTIFICATIONS.filter((n) => !n.read).length
 
@@ -69,15 +68,16 @@ export default function Topbar({ onMenuClick }) {
           <Menu className="h-5 w-5" />
         </button>
 
-        {/* Search */}
+        {/* Search — opens Command Palette */}
         <button
-          onClick={() => setSearchOpen(true)}
-          className="flex items-center gap-2.5 h-9 px-3.5 rounded-xl bg-gray-100 dark:bg-surface-800 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors text-sm"
+          onClick={onSearchClick}
+          className="flex items-center gap-2.5 h-9 px-3.5 rounded-xl bg-gray-100 dark:bg-surface-800 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-200 dark:hover:bg-surface-700 transition-colors text-sm"
         >
           <Search className="h-4 w-4 shrink-0" />
           <span className="hidden sm:inline">Search anything...</span>
-          <kbd className="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 text-xs font-mono text-gray-400 bg-gray-200 dark:bg-surface-700 rounded">
-            ⌘K
+          <kbd className="hidden sm:inline-flex items-center gap-0.5 text-xs font-mono text-gray-400 dark:text-gray-500">
+            <span className="px-1 py-0.5 bg-white dark:bg-surface-900 border border-gray-200 dark:border-surface-700 rounded text-[10px]">⌘</span>
+            <span className="px-1 py-0.5 bg-white dark:bg-surface-900 border border-gray-200 dark:border-surface-700 rounded text-[10px]">K</span>
           </kbd>
         </button>
       </div>

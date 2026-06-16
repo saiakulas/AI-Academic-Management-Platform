@@ -1,15 +1,16 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Outlet } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import Sidebar from './Sidebar'
 import Topbar from './Topbar'
-import { cn } from '@/lib/utils'
+import CommandPalette from '@/components/common/CommandPalette'
 
 export default function DashboardLayout() {
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [sidebarCollapsed,  setSidebarCollapsed]  = useState(false)
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
+  const [cmdOpen,           setCmdOpen]           = useState(false)
 
-  // Close mobile sidebar on resize
+  // ── Close mobile sidebar on resize ────────────────────────────
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1024) setMobileSidebarOpen(false)
@@ -18,9 +19,24 @@ export default function DashboardLayout() {
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
+  // ── Global ⌘K / Ctrl+K listener ──────────────────────────────
+  useEffect(() => {
+    const handle = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault()
+        setCmdOpen((v) => !v)
+      }
+    }
+    window.addEventListener('keydown', handle)
+    return () => window.removeEventListener('keydown', handle)
+  }, [])
+
+  const openCmd  = useCallback(() => setCmdOpen(true),  [])
+  const closeCmd = useCallback(() => setCmdOpen(false), [])
+
   return (
     <div className="flex h-screen overflow-hidden bg-gray-50 dark:bg-surface-950">
-      {/* ─── Desktop Sidebar ─────────────────────────────────────── */}
+      {/* ─── Desktop Sidebar ──────────────────────────────────────── */}
       <div className="hidden lg:flex">
         <Sidebar
           collapsed={sidebarCollapsed}
@@ -28,7 +44,7 @@ export default function DashboardLayout() {
         />
       </div>
 
-      {/* ─── Mobile Sidebar Overlay ──────────────────────────────── */}
+      {/* ─── Mobile Sidebar Overlay ───────────────────────────────── */}
       <AnimatePresence>
         {mobileSidebarOpen && (
           <>
@@ -57,7 +73,11 @@ export default function DashboardLayout() {
 
       {/* ─── Main Content ─────────────────────────────────────────── */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <Topbar onMenuClick={() => setMobileSidebarOpen((v) => !v)} />
+        {/* Pass openCmd so Topbar search button can trigger it */}
+        <Topbar
+          onMenuClick={() => setMobileSidebarOpen((v) => !v)}
+          onSearchClick={openCmd}
+        />
 
         <main className="flex-1 overflow-y-auto">
           <div className="h-full">
@@ -65,6 +85,9 @@ export default function DashboardLayout() {
           </div>
         </main>
       </div>
+
+      {/* ─── Command Palette — rendered at layout root ────────────── */}
+      <CommandPalette open={cmdOpen} onClose={closeCmd} />
     </div>
   )
 }
