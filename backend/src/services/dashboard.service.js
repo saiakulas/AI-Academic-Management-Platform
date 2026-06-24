@@ -192,22 +192,55 @@ class DashboardService {
   }
 
   /**
-   * Parent dashboard — children's attendance + notices
+   * Parent dashboard — full view of each child's academic status
    */
   async getParentStats(userId) {
     const children = await Student.find({ parents: userId, isActive: true })
       .populate('user', 'firstName lastName email avatar')
-      .populate('currentClass', 'name section grade');
+      .populate('currentClass', 'name section grade academicYear');
 
     const childStats = await Promise.all(
       children.map(async (child) => {
-        const summary = await this._getStudentMonthlyAttendance(
-          child._id,
-          child.currentClass?._id
-        );
+        const classId = child.currentClass?._id;
+
+        const [attendance, upcomingAssignments, latestResult] = await Promise.all([
+          this._getStudentMonthlyAttendance(child._id, classId),
+
+          // Upcoming assignments for child's class
+          classId
+            ? Assignment.find({
+                class:   classId,
+                status:  'published',
+                dueDate: { $gte: new Date() },
+              })
+              .sort({ dueDate: 1 })
+              .limit(3)
+              .populate('subject', 'name code')
+            : Promise.resolve([]),
+
+          // Most recent published result
+          classId
+            ? require('../models/Result')
+                .findOne({ student: child._id, isPublished: true })
+                .sort({ createdAt: -1 })
+                .populate('grades.subject', 'name code')
+            : Promise.resolve(null),
+        ]);
+
         return {
-          student:    child,
-          attendance: summary,
+          student: child,
+          attendance,
+          upcomingAssignments,
+          latestResult: latestResult
+            ? {
+                examType:    latestResult.examType,
+                examName:    latestResult.examName,
+                academicYear:latestResult.academicYear,
+                percentage:  latestResult.percentage,
+                totalObtained: latestResult.totalObtained,
+                totalPossible: latestResult.totalPossible,
+              }
+            : null,
         };
       })
     );

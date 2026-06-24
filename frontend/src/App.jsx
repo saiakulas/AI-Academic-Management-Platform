@@ -5,6 +5,7 @@ import ProtectedRoute, { GuestRoute } from '@/components/common/ProtectedRoute'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import { FullPageSpinner } from '@/components/ui/Spinner'
 import { useAuthInit } from '@/hooks/useAuth'
+import useAuthStore from '@/store/authStore'
 
 // ── Auth ──────────────────────────────────────────────────────────
 const LoginPage    = lazy(() => import('@/pages/auth/LoginPage'))
@@ -12,6 +13,7 @@ const RegisterPage = lazy(() => import('@/pages/auth/RegisterPage'))
 
 // ── Dashboard ─────────────────────────────────────────────────────
 const DashboardPage   = lazy(() => import('@/pages/dashboard/DashboardPage'))
+const ParentDashboard = lazy(() => import('@/pages/dashboard/parent/ParentDashboard'))
 
 // ── Phase 2 pages ─────────────────────────────────────────────────
 const StudentsPage    = lazy(() => import('@/pages/dashboard/students/StudentsPage'))
@@ -23,13 +25,23 @@ const AssignmentsPage = lazy(() => import('@/pages/dashboard/assignments/Assignm
 const NoticesPage     = lazy(() => import('@/pages/dashboard/notices/NoticesPage'))
 
 // ── Phase 3 pages ─────────────────────────────────────────────────
-const ResultsPage     = lazy(() => import('@/pages/dashboard/results/ResultsPage'))
-const MaterialsPage   = lazy(() => import('@/pages/dashboard/materials/MaterialsPage'))
-const ProfilePage     = lazy(() => import('@/pages/dashboard/profile/ProfilePage'))
-const SettingsPage    = lazy(() => import('@/pages/dashboard/settings/SettingsPage'))
+const ResultsPage   = lazy(() => import('@/pages/dashboard/results/ResultsPage'))
+const MaterialsPage = lazy(() => import('@/pages/dashboard/materials/MaterialsPage'))
+const ProfilePage   = lazy(() => import('@/pages/dashboard/profile/ProfilePage'))
+const SettingsPage  = lazy(() => import('@/pages/dashboard/settings/SettingsPage'))
 
 // ── Errors ────────────────────────────────────────────────────────
-const NotFoundPage    = lazy(() => import('@/pages/errors/NotFoundPage'))
+const NotFoundPage = lazy(() => import('@/pages/errors/NotFoundPage'))
+
+/**
+ * Smart index component: renders the parent-specific dashboard for
+ * the 'parent' role, the standard dashboard for all other roles.
+ */
+function DashboardIndex() {
+  const role = useAuthStore((s) => s.user?.role)
+  if (role === 'parent') return <ParentDashboard />
+  return <DashboardPage />
+}
 
 export default function App() {
   useAuthInit()
@@ -53,8 +65,8 @@ export default function App() {
             </ProtectedRoute>
           }
         >
-          {/* Overview */}
-          <Route index element={<DashboardPage />} />
+          {/* Role-aware index: admin/teacher/student → DashboardPage, parent → ParentDashboard */}
+          <Route index element={<DashboardIndex />} />
 
           {/* ── People (Phase 2) ──────────────────────────────── */}
           <Route
@@ -93,13 +105,13 @@ export default function App() {
           />
           <Route path="assignments" element={<AssignmentsPage />} />
 
-          {/* ── Monitoring (Phase 2) ───────────────────────────── */}
+          {/* ── Monitoring ────────────────────────────────────── */}
           <Route path="attendance" element={<AttendancePage />} />
 
-          {/* ── Results (Phase 3) ──────────────────────────────── */}
+          {/* ── Results (Phase 3) ─────────────────────────────── */}
           <Route path="results" element={<ResultsPage />} />
 
-          {/* ── Study Materials (Phase 3) ──────────────────────── */}
+          {/* ── Study Materials (Phase 3) ─────────────────────── */}
           <Route
             path="materials"
             element={
