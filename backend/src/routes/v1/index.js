@@ -15,6 +15,7 @@ const noticeRoutes     = require('./notice.routes');
 const resultRoutes     = require('./result.routes');
 const materialRoutes   = require('./material.routes');
 const dashboardRoutes  = require('./dashboard.routes');
+const timetableRoutes  = require('./timetable.routes');
 
 // ── Health check ──────────────────────────────────────────────────
 router.get('/health', (_req, res) => {
@@ -27,7 +28,7 @@ router.get('/health', (_req, res) => {
     modules: [
       'auth', 'users', 'profile', 'students', 'teachers',
       'classes', 'subjects', 'attendance', 'assignments',
-      'notices', 'results', 'materials', 'dashboard',
+      'notices', 'results', 'materials', 'dashboard', 'timetable',
     ],
   });
 });
@@ -46,5 +47,6 @@ router.use('/notices',    noticeRoutes);
 router.use('/results',    resultRoutes);
 router.use('/materials',  materialRoutes);
 router.use('/dashboard',  dashboardRoutes);
+router.use('/timetable',  timetableRoutes);
 
 module.exports = router;

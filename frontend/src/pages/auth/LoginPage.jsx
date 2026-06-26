@@ -102,26 +102,7 @@ export default function LoginPage() {
           Sign in
         </Button>
 
-        {/* Demo credentials */}
-        <div className="rounded-xl bg-gray-50 dark:bg-surface-800 border border-gray-200 dark:border-surface-700 p-4">
-          <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2.5">
-            Demo Accounts
-          </p>
-          <div className="space-y-1.5">
-            {[
-              { role: 'Principal (Admin)', email: 'admin@eduflow.com' },
-              { role: 'Teacher',           email: 'teacher@eduflow.com' },
-              { role: 'Student',           email: 'student@eduflow.com' },
-              { role: 'Parent',            email: 'parent@eduflow.com' },
-            ].map(({ role, email }) => (
-              <div key={role} className="flex items-center justify-between text-xs">
-                <span className="text-gray-500 dark:text-gray-400">{role}</span>
-                <span className="font-mono text-gray-700 dark:text-gray-300">{email}</span>
-              </div>
-            ))}
-            <p className="text-xs text-gray-400 mt-1.5">All passwords: <span className="font-mono">Demo@1234</span></p>
-          </div>
-        </div>
+
       </form>
 
       <p className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
