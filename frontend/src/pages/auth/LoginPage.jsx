@@ -101,8 +101,6 @@ export default function LoginPage() {
         >
           Sign in
         </Button>
-
-
       </form>
 
       <p className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">

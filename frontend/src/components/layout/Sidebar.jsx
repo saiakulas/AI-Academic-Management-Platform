@@ -15,6 +15,7 @@ import {
   Shield,
   Calendar,
   FolderOpen,
+  CalendarDays,
 } from 'lucide-react'
 import { cn, ROLE_META } from '@/lib/utils'
 import useAuthStore from '@/store/authStore'
@@ -40,6 +41,7 @@ const NAV_ITEMS = [
       { label: 'Subjects',        icon: FolderOpen,    to: '/dashboard/subjects',    roles: ['admin', 'teacher', 'student'] },
       { label: 'Assignments',     icon: ClipboardList, to: '/dashboard/assignments', roles: ['admin', 'teacher', 'student'] },
       { label: 'Study Materials', icon: FileText,      to: '/dashboard/materials',   roles: ['admin', 'teacher', 'student'] },
+      { label: 'Timetable',       icon: CalendarDays,  to: '/dashboard/timetable',   roles: ['admin', 'teacher', 'student'] },
     ],
   },
   {

@@ -30,6 +30,9 @@ const MaterialsPage = lazy(() => import('@/pages/dashboard/materials/MaterialsPa
 const ProfilePage   = lazy(() => import('@/pages/dashboard/profile/ProfilePage'))
 const SettingsPage  = lazy(() => import('@/pages/dashboard/settings/SettingsPage'))
 
+// ── Timetable ─────────────────────────────────────────────────────
+const TimetablePage = lazy(() => import('@/pages/dashboard/timetable/TimetablePage'))
+
 // ── Errors ────────────────────────────────────────────────────────
 const NotFoundPage = lazy(() => import('@/pages/errors/NotFoundPage'))
 
@@ -117,6 +120,16 @@ export default function App() {
             element={
               <ProtectedRoute roles={['admin', 'teacher', 'student']}>
                 <MaterialsPage />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* ── Timetable ─────────────────────────────────────── */}
+          <Route
+            path="timetable"
+            element={
+              <ProtectedRoute roles={['admin', 'teacher', 'student']}>
+                <TimetablePage />
               </ProtectedRoute>
             }
           />
